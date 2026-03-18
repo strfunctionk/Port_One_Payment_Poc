@@ -16,10 +16,14 @@ const REQUIRED_ENV = [
   "JWT_SECRET",
   "ACCESS_TOKEN_EXPIRATION",
   "REFRESH_TOKEN_EXPIRATION",
+  "PORTONE_STORE_ID",
+  "PORTONE_API_SECRET",
 ];
 const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
 if (missingEnv.length > 0) {
-  console.error(`[Startup Error] Missing required environment variables: ${missingEnv.join(", ")}`);
+  console.error(
+    `[Startup Error] Missing required environment variables: ${missingEnv.join(", ")}`,
+  );
   process.exit(1);
 }
 
@@ -36,7 +40,7 @@ app.use(stateHandler);
 app.use(
   "/docs",
   swaggerUiExpress.serve,
-  swaggerUiExpress.setup(null, swaggerOptions)
+  swaggerUiExpress.setup(null, swaggerOptions),
 );
 
 app.get("/openapi.json", swaggerHandler);

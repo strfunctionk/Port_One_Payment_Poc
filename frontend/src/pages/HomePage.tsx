@@ -32,12 +32,20 @@ export default function HomePage() {
                     <p className="text-sm text-gray-500">{profile.email}</p>
                 </div>
             )}
-            <button
-                onClick={handleSignOut}
-                className="rounded bg-red-500 px-4 py-2 text-white"
-            >
-                로그아웃
-            </button>
+            <div className="flex gap-3">
+                <button
+                    onClick={() => navigate("/payment")}
+                    className="rounded bg-blue-500 px-4 py-2 text-white"
+                >
+                    결제 테스트
+                </button>
+                <button
+                    onClick={handleSignOut}
+                    className="rounded bg-red-500 px-4 py-2 text-white"
+                >
+                    로그아웃
+                </button>
+            </div>
         </div>
     );
 }

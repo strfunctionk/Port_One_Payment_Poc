@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@portone/server-sdk':
+        specifier: ^0.19.0
+        version: 0.19.0
       '@prisma/client':
         specifier: ^6.7.0
         version: 6.15.0(prisma@6.15.0)
@@ -47,6 +50,9 @@ importers:
         version: 3.1.10
 
 packages:
+
+  '@portone/server-sdk@0.19.0':
+    resolution: {integrity: sha512-JIbD9HEEqaYuuW0zKU/sapqH1HQBf/Len+8ZPnMRb7E7tHnqRGrKPLS+fom34xUTiF3ZVKTrDjHeQHQ2YZc2og==}
 
   '@prisma/client@6.15.0':
     resolution: {integrity: sha512-wR2LXUbOH4cL/WToatI/Y2c7uzni76oNFND7+23ypLllBmIS8e3ZHhO+nud9iXSXKFt1SoM3fTZvHawg63emZw==}
@@ -662,6 +668,8 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
 snapshots:
+
+  '@portone/server-sdk@0.19.0': {}
 
   '@prisma/client@6.15.0(prisma@6.15.0)':
     optionalDependencies:
