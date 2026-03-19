@@ -10,7 +10,8 @@
     "prisma:migrate": "pnpm --filter backend exec prisma migrate dev",
     "prisma:migrate:reset": "pnpm --filter backend exec prisma migrate reset",
     "prisma:studio": "pnpm --filter backend exec prisma studio",
-    "prisma:push": "pnpm --filter backend exec prisma db push"
+    "prisma:push": "pnpm --filter backend exec prisma db push",
+    "prisma:seed": "pnpm --filter backend seed"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

@@ -7,6 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TransactionType {
+  PAYMENT
+  CANCEL
+}
+
+enum TransactionStatus {
+  PAID
+  FAILED
+  CANCELLED
+  PARTIAL_CANCELLED
+}
+
+enum PaymentMethod {
+  PaymentMethodCard
+  PaymentMethodEasyPay
+  PaymentMethodTransfer
+  PaymentMethodVirtualAccount
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   email        String    @unique(map: "email") @db.VarChar(255)
@@ -23,18 +42,60 @@ model User {
 }
 
 model Payment {
-  id            Int       @id @default(autoincrement())
-  paymentId     String    @unique @map("payment_id") @db.VarChar(255)
-  transactionId String?   @map("transaction_id") @db.VarChar(255)
-  userId        Int       @map("user_id")
-  orderName     String    @map("order_name") @db.VarChar(255)
+  id            Int           @id @default(autoincrement())
+  paymentId     String        @unique @map("payment_id") @db.VarChar(255)
+  userId        Int           @map("user_id")
+  orderName     String        @map("order_name") @db.VarChar(255)
   amount        Int
-  status        String    @db.VarChar(50)
-  method        String?   @db.VarChar(50)
-  paidAt        DateTime? @map("paid_at") @db.DateTime(6)
-  createdAt     DateTime  @default(now()) @map("created_at") @db.DateTime(6)
-  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(6)
-  user          User      @relation(fields: [userId], references: [id])
+  currency      String        @db.VarChar(10)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.DateTime(6)
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.DateTime(6)
+  user          User          @relation(fields: [userId], references: [id])
+  transactions  Transaction[]
 
   @@map("payment")
+}
+
+model Transaction {
+  id               Int               @id @default(autoincrement())
+  transactionId    String            @unique @map("transaction_id") @db.VarChar(255)
+  paymentId        Int               @map("payment_id")
+  type             TransactionType
+  amount           Int
+  status           TransactionStatus
+  method           PaymentMethod
+  paidAt           DateTime          @map("paid_at") @db.DateTime(6)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.DateTime(6)
+  payment          Payment           @relation(fields: [paymentId], references: [id])
+  cardDetail       CardDetail?
+  easyPayDetail    EasyPayDetail?
+
+  @@map("transaction")
+}
+
+model CardDetail {
+  id               Int         @id @default(autoincrement())
+  transactionId    Int         @unique @map("transaction_id")
+  cardName         String?     @map("card_name") @db.VarChar(100)
+  cardNumber       String?     @map("card_number") @db.VarChar(20)
+  cardBrand        String?     @map("card_brand") @db.VarChar(20)
+  approvalNumber   String?     @map("approval_number") @db.VarChar(50)
+  installmentMonth Int?        @map("installment_month")
+  transaction      Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("card_detail")
+}
+
+model EasyPayDetail {
+  id               Int         @id @default(autoincrement())
+  transactionId    Int         @unique @map("transaction_id")
+  provider         String      @db.VarChar(50)
+  cardName         String?     @map("card_name") @db.VarChar(100)
+  cardNumber       String?     @map("card_number") @db.VarChar(20)
+  cardBrand        String?     @map("card_brand") @db.VarChar(20)
+  approvalNumber   String?     @map("approval_number") @db.VarChar(50)
+  installmentMonth Int?        @map("installment_month")
+  transaction      Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("easy_pay_detail")
 }

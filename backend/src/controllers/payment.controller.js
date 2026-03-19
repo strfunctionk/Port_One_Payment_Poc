@@ -37,12 +37,31 @@ export const handlePaymentComplete = async (req, res, next) => {
               type: 'object',
               properties: {
                 paymentId: { type: 'string', example: 'payment_1234567890' },
-                transactionId: { type: 'string', example: 'tx_1234567890' },
                 orderName: { type: 'string', example: '테스트 상품' },
                 amount: { type: 'number', example: 1000 },
-                status: { type: 'string', example: 'PAID' },
-                method: { type: 'string', example: 'CARD' },
-                paidAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' }
+                currency: { type: 'string', example: 'KRW' },
+                createdAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' },
+                updatedAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' },
+                transactions: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      transactionId: { type: 'string', example: 'tx_1234567890' },
+                      type: { type: 'string', example: 'PAYMENT' },
+                      amount: { type: 'number', example: 1000 },
+                      status: { type: 'string', example: 'PAID' },
+                      method: { type: 'string', example: 'PaymentMethodCard' },
+                      easyPayProvider: { type: 'string', example: null },
+                      cardName: { type: 'string', example: '신한카드' },
+                      cardNumber: { type: 'string', example: '123456******1234' },
+                      cardBrand: { type: 'string', example: 'VISA' },
+                      approvalNumber: { type: 'string', example: '00000000' },
+                      installmentMonth: { type: 'number', example: 0 },
+                      paidAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' }
+                    }
+                  }
+                }
               }
             }
           }
@@ -106,12 +125,31 @@ export const handleGetMyPayments = async (req, res, next) => {
                 type: 'object',
                 properties: {
                   paymentId: { type: 'string', example: 'payment_1234567890' },
-                  transactionId: { type: 'string', example: 'tx_1234567890' },
                   orderName: { type: 'string', example: '테스트 상품' },
                   amount: { type: 'number', example: 1000 },
-                  status: { type: 'string', example: 'PAID' },
-                  method: { type: 'string', example: 'CARD' },
-                  paidAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' }
+                  currency: { type: 'string', example: 'KRW' },
+                  createdAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' },
+                  updatedAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' },
+                  transactions: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        transactionId: { type: 'string', example: 'tx_1234567890' },
+                        type: { type: 'string', example: 'PAYMENT' },
+                        amount: { type: 'number', example: 1000 },
+                        status: { type: 'string', example: 'PAID' },
+                        method: { type: 'string', example: 'PaymentMethodCard' },
+                        easyPayProvider: { type: 'string', example: null },
+                        cardName: { type: 'string', example: '신한카드' },
+                        cardNumber: { type: 'string', example: '123456******1234' },
+                        cardBrand: { type: 'string', example: 'VISA' },
+                        approvalNumber: { type: 'string', example: '00000000' },
+                        installmentMonth: { type: 'number', example: 0 },
+                        paidAt: { type: 'string', example: '2023-01-01T00:00:00.000Z' }
+                      }
+                    }
+                  }
                 }
               }
             }

@@ -6,17 +6,9 @@ interface PaymentCompleteRequest {
     amount: number;
 }
 
-interface PaymentCompleteResponse {
-    paymentId: string;
-    transactionId: string;
-    orderName: string;
-    amount: number;
-    status: string;
-    method: string;
-    paidAt: string;
-    createdAt: string;
-    updatedAt: string;
-}
+import { Payment } from "@/apis/queries/payment/getMyPayments";
+
+type PaymentCompleteResponse = Payment;
 
 export const postPaymentComplete = async (
     data: PaymentCompleteRequest

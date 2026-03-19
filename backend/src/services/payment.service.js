@@ -11,6 +11,39 @@ import {
 } from "../repositories/payment.repository.js";
 import { responseFromPayment, responseFromPayments } from "../dtos/payment.dto.js";
 
+const extractPaymentDetail = (method) => {
+  if (method.type === "PaymentMethodCard") {
+    const card = method.card ?? null;
+    return {
+      cardDetail: {
+        cardName: card?.name || null,
+        cardNumber: card?.number || null,
+        cardBrand: card?.brand || null,
+        approvalNumber: method.approvalNumber || null,
+        installmentMonth: method.installment?.month ?? null,
+      },
+      easyPayDetail: null,
+    };
+  }
+
+  if (method.type === "PaymentMethodEasyPay") {
+    const card = method.easyPayMethod?.card ?? null;
+    return {
+      cardDetail: null,
+      easyPayDetail: {
+        provider: method.provider,
+        cardName: card?.name || null,
+        cardNumber: card?.number || null,
+        cardBrand: card?.brand || null,
+        approvalNumber: method.easyPayMethod?.approvalNumber || null,
+        installmentMonth: method.easyPayMethod?.installment?.month ?? null,
+      },
+    };
+  }
+
+  return { cardDetail: null, easyPayDetail: null };
+};
+
 const getPaymentFromPortOne = async (paymentId) => {
   const url = `${PORTONE_API_URL}/payments/${encodeURIComponent(paymentId)}?storeId=${encodeURIComponent(PORTONE_STORE_ID)}`;
 
@@ -63,16 +96,27 @@ export const completePayment = async (data, userId) => {
     });
   }
 
+  const { cardDetail, easyPayDetail } = extractPaymentDetail(payment.method);
+
   // 결제 정보 저장
   const savedPayment = await createPayment({
-    paymentId: data.paymentId,
-    transactionId: payment.transactionId,
-    userId,
-    orderName: data.orderName,
-    amount: payment.amount.total,
-    status: payment.status,
-    method: payment.method?.type || null,
-    paidAt: payment.paidAt ? new Date(payment.paidAt) : null,
+    payment: {
+      paymentId: data.paymentId,
+      userId,
+      orderName: data.orderName,
+      amount: payment.amount.total,
+      currency: payment.currency,
+    },
+    transaction: {
+      transactionId: payment.transactionId,
+      type: "PAYMENT",
+      amount: payment.amount.total,
+      status: payment.status,
+      method: payment.method.type,
+      paidAt: new Date(payment.paidAt),
+      cardDetail,
+      easyPayDetail,
+    },
   });
 
   return responseFromPayment({ payment: savedPayment });

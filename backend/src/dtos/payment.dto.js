@@ -6,17 +6,29 @@ export const bodyToPaymentComplete = (body) => {
   };
 };
 
+const responseFromTransaction = (transaction) => {
+  return {
+    transactionId: transaction.transactionId,
+    type: transaction.type,
+    amount: transaction.amount,
+    status: transaction.status,
+    method: transaction.method,
+    paidAt: transaction.paidAt,
+    createdAt: transaction.createdAt,
+    cardDetail: transaction.cardDetail ?? null,
+    easyPayDetail: transaction.easyPayDetail ?? null,
+  };
+};
+
 export const responseFromPayment = ({ payment }) => {
   return {
     paymentId: payment.paymentId,
-    transactionId: payment.transactionId,
     orderName: payment.orderName,
     amount: payment.amount,
-    status: payment.status,
-    method: payment.method,
-    paidAt: payment.paidAt,
+    currency: payment.currency,
     createdAt: payment.createdAt,
     updatedAt: payment.updatedAt,
+    transactions: payment.transactions.map(responseFromTransaction),
   };
 };
 
