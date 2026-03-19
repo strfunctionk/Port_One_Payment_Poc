@@ -1,0 +1,19 @@
+{
+  "name": "port-one-payment-poc",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter backend dev\" \"pnpm --filter frontend dev\"",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "prisma:generate": "pnpm --filter backend exec prisma generate",
+    "prisma:migrate": "pnpm --filter backend exec prisma migrate dev",
+    "prisma:migrate:reset": "pnpm --filter backend exec prisma migrate reset",
+    "prisma:studio": "pnpm --filter backend exec prisma studio",
+    "prisma:push": "pnpm --filter backend exec prisma db push",
+    "prisma:seed": "pnpm --filter backend seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

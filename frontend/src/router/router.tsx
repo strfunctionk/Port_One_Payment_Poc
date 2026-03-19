@@ -3,6 +3,7 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import HomePage from "@/pages/HomePage";
 import LoginPage from "@/pages/LoginPage";
+import PaymentPage from "@/pages/PaymentPage";
 import SignupPage from "@/pages/SignupPage";
 
 const router = createBrowserRouter([
@@ -13,7 +14,10 @@ const router = createBrowserRouter([
     // Protected Routes
     {
         element: <ProtectedLayout />,
-        children: [{ path: "/", element: <HomePage /> }],
+        children: [
+            { path: "/", element: <HomePage /> },
+            { path: "/payment", element: <PaymentPage /> },
+        ],
     },
 
     // Fallback
