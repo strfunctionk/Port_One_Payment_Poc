@@ -1,5 +1,5 @@
 {
-  "name": "preset",
+  "name": "backend",
   "type": "module",
   "version": "1.0.0",
   "description": "preset",
@@ -8,7 +8,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "dev": "nodemon -e js,json,prisma --exec \"prisma generate && node src/index.js\"",
-    "migrate": "prisma migrate dev --name init"
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
+    "migrate:name": "prisma migrate dev --name",
+    "migrate:reset": "prisma migrate reset",
+    "migrate:deploy": "prisma migrate deploy",
+    "push": "prisma db push",
+    "studio": "prisma studio"
   },
   "author": "",
   "license": "ISC",
