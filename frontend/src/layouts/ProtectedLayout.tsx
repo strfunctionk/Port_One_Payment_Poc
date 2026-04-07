@@ -1,12 +1,13 @@
+import { useAuth } from "@clerk/clerk-react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import { useAuth } from "@/context/AuthContext";
-
 export default function ProtectedLayout() {
-    const { accessToken } = useAuth();
+    const { isSignedIn, isLoaded } = useAuth();
     const location = useLocation();
 
-    if (!accessToken) {
+    if (!isLoaded) return null;
+
+    if (!isSignedIn) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 

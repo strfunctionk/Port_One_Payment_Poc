@@ -4,12 +4,12 @@ import ProtectedLayout from "@/layouts/ProtectedLayout";
 import HomePage from "@/pages/HomePage";
 import LoginPage from "@/pages/LoginPage";
 import PaymentPage from "@/pages/PaymentPage";
-import SignupPage from "@/pages/SignupPage";
+import SsoCallbackPage from "@/pages/SsoCallbackPage";
 
 const router = createBrowserRouter([
     // Public Routes
     { path: "/login", element: <LoginPage /> },
-    { path: "/signup", element: <SignupPage /> },
+    { path: "/sso-callback", element: <SsoCallbackPage /> },
 
     // Protected Routes
     {
