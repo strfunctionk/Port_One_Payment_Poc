@@ -27,3 +27,13 @@ export const formatMethod = (transaction: Transaction) => {
 export const formatAmount = (amount: number) => {
     return amount.toLocaleString("ko-KR") + "원";
 };
+
+export const formatPgProvider = (pgProvider: string | null) => {
+    if (!pgProvider) return "-";
+    const map: Record<string, string> = {
+        KCP_V2: "NHN KCP",
+        INICIS_V2: "KG이니시스",
+        KAKAOPAY: "카카오페이",
+    };
+    return map[pgProvider] ?? pgProvider;
+};

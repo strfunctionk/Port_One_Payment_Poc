@@ -12,5 +12,5 @@ export interface GetProfileResponse {
 
 export const getProfile = async (): Promise<GetProfileResponse> => {
     const { data } = await axiosInstance.get("/user");
-    return data.success;
+    return data.result;
 };

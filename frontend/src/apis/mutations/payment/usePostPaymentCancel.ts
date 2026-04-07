@@ -2,19 +2,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { queryKeys } from "@/constants/queryKeys";
 
-import { postPaymentComplete } from "./postPaymentComplete";
+import { postPaymentCancel } from "./postPaymentCancel";
 
-export const usePostPaymentComplete = () => {
+export const usePostPaymentCancel = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: postPaymentComplete,
+        mutationFn: postPaymentCancel,
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.payment.my(),
-            });
-            queryClient.invalidateQueries({
-                queryKey: queryKeys.ticket.myCredits(),
             });
         },
     });
