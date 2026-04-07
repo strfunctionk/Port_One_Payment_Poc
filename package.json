@@ -6,7 +6,7 @@
     "dev": "concurrently \"pnpm --filter backend dev\" \"pnpm --filter frontend dev\"",
     "dev:backend": "pnpm --filter backend dev",
     "dev:frontend": "pnpm --filter frontend dev",
-    "setup": "pnpm prisma:push && pnpm prisma:seed",
+    "db:init": "pnpm prisma:push && pnpm prisma:seed",
     "db:reset": "pnpm prisma:push --accept-data-loss && pnpm prisma:seed",
     "prisma:push": "pnpm --filter backend exec prisma db push",
     "prisma:seed": "pnpm --filter backend seed",

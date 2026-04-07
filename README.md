@@ -66,7 +66,7 @@ VITE_CLERK_PUBLISHABLE_KEY="pk_test_..."
 ### 3. DB 초기화
 
 ```bash
-pnpm setup
+pnpm db:init
 ```
 
 > SQLite 파일(`backend/prisma/dev.db`)이 자동 생성됩니다. 별도 DB 설치는 필요 없습니다.
@@ -91,7 +91,7 @@ pnpm dev
 
 ```bash
 pnpm install       # 1. 의존성 설치
-pnpm setup         # 2. DB 생성 및 초기 데이터 삽입
+pnpm db:init       # 2. DB 생성 및 초기 데이터 삽입
 pnpm dev           # 3. 프론트 + 백엔드 동시 실행
 ```
 
@@ -106,6 +106,7 @@ pnpm dev:frontend  # 프론트만 실행
 **DB 관련**
 
 ```bash
+pnpm db:init         # DB 생성 및 초기 데이터 삽입 (최초 1회)
 pnpm db:reset        # DB 초기화 (데이터 전체 삭제 후 재생성)
 pnpm prisma:studio   # DB 데이터 GUI로 확인 → http://localhost:5555
 ```
