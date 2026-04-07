@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -27,48 +27,52 @@ enum PaymentMethod {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique(map: "email") @db.VarChar(255)
-  name         String    @db.VarChar(255)
-  username     String    @unique @db.VarChar(255)
-  password     String    @db.VarChar(255)
-  avatar       String?   @db.VarChar(255)
-  refreshToken String?   @db.VarChar(500)
-  createdAt    DateTime  @default(now()) @map("created_at") @db.DateTime(6)
-  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(6)
-  payments     Payment[]
+  id                Int                 @id @default(autoincrement())
+  clerkId           String?             @unique @map("clerk_id")
+  email             String              @unique
+  name              String
+  username          String              @unique
+  password          String?
+  avatar            String?
+  refreshToken      String?
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @default(now()) @updatedAt @map("updated_at")
+  payments          Payment[]
+  reportCredit      MemberReportCredit?
 
   @@map("user")
 }
 
 model Payment {
-  id            Int           @id @default(autoincrement())
-  paymentId     String        @unique @map("payment_id") @db.VarChar(255)
-  userId        Int           @map("user_id")
-  orderName     String        @map("order_name") @db.VarChar(255)
-  amount        Int
-  currency      String        @db.VarChar(10)
-  createdAt     DateTime      @default(now()) @map("created_at") @db.DateTime(6)
-  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.DateTime(6)
-  user          User          @relation(fields: [userId], references: [id])
-  transactions  Transaction[]
+  id             Int             @id @default(autoincrement())
+  paymentId      String          @unique @map("payment_id")
+  userId         Int             @map("user_id")
+  orderName      String          @map("order_name")
+  amount         Int
+  currency       String
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at")
+  user           User            @relation(fields: [userId], references: [id])
+  transactions   Transaction[]
+  paymentTickets PaymentTicket[]
 
   @@map("payment")
 }
 
 model Transaction {
-  id               Int               @id @default(autoincrement())
-  transactionId    String            @unique @map("transaction_id") @db.VarChar(255)
-  paymentId        Int               @map("payment_id")
-  type             TransactionType
-  amount           Int
-  status           TransactionStatus
-  method           PaymentMethod
-  paidAt           DateTime          @map("paid_at") @db.DateTime(6)
-  createdAt        DateTime          @default(now()) @map("created_at") @db.DateTime(6)
-  payment          Payment           @relation(fields: [paymentId], references: [id])
-  cardDetail       CardDetail?
-  easyPayDetail    EasyPayDetail?
+  id            Int               @id @default(autoincrement())
+  transactionId String            @unique @map("transaction_id")
+  paymentId     Int               @map("payment_id")
+  type          TransactionType
+  amount        Int
+  status        TransactionStatus
+  method        PaymentMethod
+  pgProvider    String?           @map("pg_provider")
+  paidAt        DateTime          @map("paid_at")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  payment       Payment           @relation(fields: [paymentId], references: [id])
+  cardDetail    CardDetail?
+  easyPayDetail EasyPayDetail?
 
   @@map("transaction")
 }
@@ -76,10 +80,10 @@ model Transaction {
 model CardDetail {
   id               Int         @id @default(autoincrement())
   transactionId    Int         @unique @map("transaction_id")
-  cardName         String?     @map("card_name") @db.VarChar(100)
-  cardNumber       String?     @map("card_number") @db.VarChar(20)
-  cardBrand        String?     @map("card_brand") @db.VarChar(20)
-  approvalNumber   String?     @map("approval_number") @db.VarChar(50)
+  cardName         String?     @map("card_name")
+  cardNumber       String?     @map("card_number")
+  cardBrand        String?     @map("card_brand")
+  approvalNumber   String?     @map("approval_number")
   installmentMonth Int?        @map("installment_month")
   transaction      Transaction @relation(fields: [transactionId], references: [id])
 
@@ -89,13 +93,49 @@ model CardDetail {
 model EasyPayDetail {
   id               Int         @id @default(autoincrement())
   transactionId    Int         @unique @map("transaction_id")
-  provider         String      @db.VarChar(50)
-  cardName         String?     @map("card_name") @db.VarChar(100)
-  cardNumber       String?     @map("card_number") @db.VarChar(20)
-  cardBrand        String?     @map("card_brand") @db.VarChar(20)
-  approvalNumber   String?     @map("approval_number") @db.VarChar(50)
+  provider         String
+  cardName         String?     @map("card_name")
+  cardNumber       String?     @map("card_number")
+  cardBrand        String?     @map("card_brand")
+  approvalNumber   String?     @map("approval_number")
   installmentMonth Int?        @map("installment_month")
   transaction      Transaction @relation(fields: [transactionId], references: [id])
 
   @@map("easy_pay_detail")
+}
+
+model TicketProduct {
+  id             Int             @id @default(autoincrement())
+  name           String
+  price          Int
+  creditAmount   Int             @map("credit_amount")
+  active         Boolean         @default(true)
+  createdAt      DateTime        @default(now()) @map("created_at")
+  paymentTickets PaymentTicket[]
+
+  @@map("ticket_product")
+}
+
+model PaymentTicket {
+  id               Int           @id @default(autoincrement())
+  paymentId        Int           @map("payment_id")
+  ticketProductId  Int           @map("ticket_product_id")
+  quantity         Int
+  unitPrice        Int           @map("unit_price")
+  unitCreditAmount Int           @map("unit_credit_amount")
+  payment          Payment       @relation(fields: [paymentId], references: [id])
+  ticketProduct    TicketProduct @relation(fields: [ticketProductId], references: [id])
+
+  @@map("payment_ticket")
+}
+
+model MemberReportCredit {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @unique @map("user_id")
+  remainingCount Int      @default(0) @map("remaining_count")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+  user           User     @relation(fields: [userId], references: [id])
+
+  @@map("member_report_credit")
 }

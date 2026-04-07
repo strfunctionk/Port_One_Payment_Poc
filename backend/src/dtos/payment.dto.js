@@ -3,6 +3,7 @@ export const bodyToPaymentComplete = (body) => {
     paymentId: body.paymentId,
     orderName: body.orderName,
     amount: body.amount,
+    items: body.items ?? [],
   };
 };
 
@@ -13,6 +14,7 @@ const responseFromTransaction = (transaction) => {
     amount: transaction.amount,
     status: transaction.status,
     method: transaction.method,
+    pgProvider: transaction.pgProvider ?? null,
     paidAt: transaction.paidAt,
     createdAt: transaction.createdAt,
     cardDetail: transaction.cardDetail ?? null,

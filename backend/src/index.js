@@ -18,6 +18,7 @@ const REQUIRED_ENV = [
   "REFRESH_TOKEN_EXPIRATION",
   "PORTONE_STORE_ID",
   "PORTONE_API_SECRET",
+  "CLERK_SECRET_KEY",
 ];
 const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
 if (missingEnv.length > 0) {
@@ -45,7 +46,7 @@ app.use(
 
 app.get("/openapi.json", swaggerHandler);
 
-app.use("/v1/api/", apiRoute);
+app.use("/api/v1/", apiRoute);
 
 app.use(errorHandler);
 

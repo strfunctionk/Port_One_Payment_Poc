@@ -5,7 +5,12 @@ const transactionInclude = {
   easyPayDetail: true,
 };
 
-export const createPayment = async ({ payment, transaction }) => {
+const paymentInclude = {
+  transactions: { include: transactionInclude },
+  paymentTickets: true,
+};
+
+export const createPayment = async ({ payment, transaction, paymentTickets = [] }) => {
   const { cardDetail, easyPayDetail, ...txData } = transaction;
 
   return await prisma.payment.create({
@@ -22,22 +27,39 @@ export const createPayment = async ({ payment, transaction }) => {
           ...(easyPayDetail ? { easyPayDetail: { create: easyPayDetail } } : {}),
         },
       },
+      ...(paymentTickets.length > 0
+        ? { paymentTickets: { create: paymentTickets } }
+        : {}),
     },
-    include: { transactions: { include: transactionInclude } },
+    include: paymentInclude,
   });
 };
 
 export const getPaymentByPaymentId = async (paymentId) => {
   return await prisma.payment.findUnique({
     where: { paymentId },
-    include: { transactions: { include: transactionInclude } },
+    include: paymentInclude,
   });
 };
 
 export const getPaymentsByUserId = async (userId) => {
   return await prisma.payment.findMany({
     where: { userId },
-    include: { transactions: { include: transactionInclude } },
+    include: paymentInclude,
     orderBy: { createdAt: "desc" },
+  });
+};
+
+export const addCancelTransaction = async (paymentInternalId, transaction) => {
+  await prisma.transaction.create({
+    data: {
+      ...transaction,
+      paymentId: paymentInternalId,
+    },
+  });
+
+  return await prisma.payment.findUnique({
+    where: { id: paymentInternalId },
+    include: paymentInclude,
   });
 };
