@@ -69,7 +69,7 @@ VITE_CLERK_PUBLISHABLE_KEY="pk_test_..."
 pnpm setup
 ```
 
-> SQLite 파일(`backend/prisma/dev.db`)이 자동 생성되고 초기 데이터가 삽입됩니다.
+> SQLite 파일(`backend/prisma/dev.db`)이 자동 생성됩니다. 별도 DB 설치는 필요 없습니다.
 
 ### 4. 개발 서버 실행
 
@@ -87,13 +87,27 @@ pnpm dev
 
 ## 명령어 목록
 
+**처음 실행할 때** (순서대로)
+
 ```bash
-pnpm dev              # 프론트 + 백엔드 동시 실행
-pnpm dev:backend      # 백엔드만 실행
-pnpm dev:frontend     # 프론트만 실행
-pnpm setup            # DB 스키마 적용 + 초기 데이터 삽입
-pnpm db:reset         # DB 초기화 (데이터 삭제 후 재생성)
-pnpm prisma:studio    # DB GUI 실행 → http://localhost:5555
+pnpm install       # 1. 의존성 설치
+pnpm setup         # 2. DB 생성 및 초기 데이터 삽입
+pnpm dev           # 3. 프론트 + 백엔드 동시 실행
+```
+
+**이후 실행할 때**
+
+```bash
+pnpm dev           # 프론트 + 백엔드 동시 실행
+pnpm dev:backend   # 백엔드만 실행
+pnpm dev:frontend  # 프론트만 실행
+```
+
+**DB 관련**
+
+```bash
+pnpm db:reset        # DB 초기화 (데이터 전체 삭제 후 재생성)
+pnpm prisma:studio   # DB 데이터 GUI로 확인 → http://localhost:5555
 ```
 
 ---
@@ -142,3 +156,37 @@ pnpm prisma:studio    # DB GUI 실행 → http://localhost:5555
 Clerk 소셜 로그인을 사용합니다.  
 최초 로그인 시 Clerk 계정 정보를 기반으로 로컬 DB에 사용자가 자동 생성됩니다.  
 인증이 필요한 API는 `Authorization: Bearer <Clerk JWT>` 헤더를 포함해야 합니다.
+
+---
+
+## 프론트엔드 사용 흐름
+
+### 1. 로그인 (`/login`)
+- Google 등 소셜 계정으로 Clerk 로그인
+- 로그인 성공 시 `/` (홈) 으로 이동
+- 최초 로그인이면 백엔드 DB에 사용자가 자동 생성됨
+
+### 2. 홈 (`/`)
+- 로그인한 사용자 이름·이메일 표시
+- **티켓 구매** 버튼 → `/payment` 이동
+- **로그아웃** 버튼 → Clerk 세션 종료 후 `/login` 이동
+
+### 3. 티켓 구매 (`/payment`)
+
+#### 상품 선택
+- 판매 중인 티켓 상품 목록 표시 (리포트 생성권 1개 / 3개)
+- `+` / `-` 버튼으로 수량 조절
+- 현재 잔여 크레딧 수 상단에 표시
+
+#### 결제
+- 수량을 1개 이상 선택하면 결제 수단 버튼 노출
+- PG사 선택: **NHN KCP (카드)** / **KG이니시스 (카드)** / **카카오페이 (간편결제)**
+- 버튼 클릭 시 흐름:
+  1. 백엔드에서 해당 PG사의 채널키 조회
+  2. PortOne SDK로 결제창 호출
+  3. 결제 완료 후 백엔드에 검증 요청 (`POST /payments/complete`)
+  4. 검증 성공 시 크레딧 지급 + 잔여 크레딧 갱신
+
+#### 결제 내역
+- 페이지 하단에 본인의 결제 내역 목록 표시
+- 각 결제 건마다 **취소** 버튼으로 결제 취소 가능
