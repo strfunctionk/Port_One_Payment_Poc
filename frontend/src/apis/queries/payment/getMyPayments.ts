@@ -1,6 +1,9 @@
 import { axiosInstance } from "@/apis/axios";
-
-import { TransactionType, TransactionStatus, PaymentMethod } from "@/enums/payment";
+import {
+    PaymentMethod,
+    TransactionStatus,
+    TransactionType,
+} from "@/enums/payment";
 
 export interface CardDetail {
     cardName: string | null;
@@ -25,6 +28,7 @@ export interface Transaction {
     amount: number;
     status: TransactionStatus;
     method: PaymentMethod;
+    pgProvider: string | null;
     paidAt: string;
     createdAt: string;
     cardDetail: CardDetail | null;
@@ -42,6 +46,6 @@ export interface Payment {
 }
 
 export const getMyPayments = async (): Promise<Payment[]> => {
-    const response = await axiosInstance.get("/payment/my");
-    return response.data.success;
+    const response = await axiosInstance.get("/payments/my");
+    return response.data.result.payments;
 };

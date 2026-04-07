@@ -1,12 +1,13 @@
 export const stateHandler = (req, res, next) => {
-  res.success = (success) => {
-    return res.json({ resultType: "SUCCESS", error: null, success });
+  res.success = (result, code = "SUCCESS", message = "요청이 성공적으로 처리되었습니다.") => {
+    return res.json({ isSuccess: true, code, message, result });
   };
   res.error = ({ errorCode = "unknown", reason = null, data = null }) => {
     return res.json({
-      resultType: "FAIL",
-      error: { errorCode, reason, data },
-      success: null,
+      isSuccess: false,
+      code: errorCode,
+      message: reason,
+      result: data,
     });
   };
   next();

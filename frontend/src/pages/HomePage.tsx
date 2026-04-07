@@ -1,35 +1,24 @@
+import { useClerk, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-
-import { usePostSignOut } from "@/apis/mutations/auth/usePostSignOut";
-import { useGetProfile } from "@/apis/queries/user/useGetProfile";
-import { useAuth } from "@/context/AuthContext";
 
 export default function HomePage() {
     const navigate = useNavigate();
-    const { clearTokens } = useAuth();
-    const { mutate: signOut } = usePostSignOut();
-    const { data: profile } = useGetProfile();
+    const { signOut } = useClerk();
+    const { user } = useUser();
 
     const handleSignOut = () => {
-        signOut(undefined, {
-            onSuccess: () => {
-                clearTokens();
-                navigate("/login");
-            },
-            onError: () => {
-                clearTokens();
-                navigate("/login");
-            },
-        });
+        signOut({ redirectUrl: "/login" });
     };
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-center gap-4">
             <h1 className="text-2xl font-bold">홈</h1>
-            {profile && (
+            {user && (
                 <div className="text-center">
-                    <p className="text-lg">{profile.name}님 환영합니다!</p>
-                    <p className="text-sm text-gray-500">{profile.email}</p>
+                    <p className="text-lg">{user.fullName}님 환영합니다!</p>
+                    <p className="text-sm text-gray-500">
+                        {user.primaryEmailAddress?.emailAddress}
+                    </p>
                 </div>
             )}
             <div className="flex gap-3">
@@ -37,7 +26,7 @@ export default function HomePage() {
                     onClick={() => navigate("/payment")}
                     className="rounded bg-blue-500 px-4 py-2 text-white"
                 >
-                    결제 테스트
+                    티켓 구매
                 </button>
                 <button
                     onClick={handleSignOut}

@@ -23,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@clerk/backend": "^3.2.7",
     "@portone/server-sdk": "^0.19.0",
     "@prisma/client": "^6.7.0",
     "bcryptjs": "^3.0.3",

@@ -1,2 +1,8 @@
 node_modules/
 pnpm-lock.yaml
+
+# SQLite DB 파일
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

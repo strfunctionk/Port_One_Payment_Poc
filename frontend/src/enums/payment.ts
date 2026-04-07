@@ -16,3 +16,9 @@ export enum PaymentMethod {
     Transfer = "PaymentMethodTransfer",
     VirtualAccount = "PaymentMethodVirtualAccount",
 }
+
+export enum PgProvider {
+    NHN_KCP = "NHN_KCP",
+    KG_INICIS = "KG_INICIS",
+    KAKAOPAY = "KAKAOPAY",
+}
